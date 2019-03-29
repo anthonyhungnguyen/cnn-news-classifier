@@ -4,7 +4,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 dir_path = os.path.dirname(os.path.realpath('__file__'))
 
-
 def label(cate):
     return {
         'business': 0,
@@ -38,23 +37,24 @@ def exportTFIDF():
 
 
 def label_tf_idf():
-    tf_idf, tf_idf_vec = exportTFIDF()
+    tf_idf, _ = exportTFIDF()
     lb = [[]]
     for cate in listFolder:
         num_of_files = count_number_of_files(cate)
         label_num = label(cate)
+        # Y matrix
         label_matrix = np.full((1, num_of_files), label_num, dtype=int)
         lb = np.append(lb, label_matrix, axis=1)
     tf_idf = np.append(tf_idf, np.matrix.transpose(lb), axis=1)
-    np.savetxt('tf_idf.csv', tf_idf, fmt='%.5f', delimiter=',')
+    np.savetxt('../knn/tf_idf.csv', tf_idf, fmt='%.5f', delimiter=',')
 
 
 def transform_newdata():
-    tf_idf, tf_idf_vec = exportTFIDF()
+    _, tf_idf_vec = exportTFIDF()
     filelist = [dir_path + "\\" + 'newtext' + "\\" +
                 str(i) + ".txt" for i in range(0, count_number_of_files('newtext'))]
     tf_idf_newtext = tf_idf_vec.transform(filelist).toarray()
-    np.savetxt('tf_idf_new.csv', tf_idf_newtext, fmt='%.5f', delimiter=',')
+    np.savetxt('../knn/tf_idf_new.csv', tf_idf_newtext, fmt='%.5f', delimiter=',')
 
 
 transform_newdata()
